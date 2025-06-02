@@ -2,18 +2,15 @@ package com.example.demo.JDBC.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
 
 @Entity
-@IdClass(LineId.class)
+@Table(name = "`lines`")  // 用反引号包裹表名，避免关键字冲突
 public class Lines {
-
 	@Id
 	private int lineId;
 
-	@Id
 	private String langCode;
-
 	private String lineContent;
 	private String omen;
 	private String explanation;

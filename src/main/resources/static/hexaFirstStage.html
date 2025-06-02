@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Divination Session</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-image: url('/images/Login_bg.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            font-family: 'zpix', sans-serif;
+            color: #e4ae30;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .root-container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* VBox ~ vertical flex container */
+        .vbox {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* HBox ~ horizontal flex container */
+        .hbox {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Specific sizes */
+        #questionField {
+            height: 150px;
+            font-size: 32px;
+        }
+
+        #hexagramContentArea {
+            font-size: 24px;
+            height: 200px;
+            resize: none;
+        }
+
+        /* Labels */
+        label.instruction {
+            font-size: 14px;
+            text-align: center;
+            color: #e4ae30;
+        }
+
+        label.question {
+            font-size: 40px;
+            text-align: center;
+            color: #e4ae30;
+        }
+
+        label.bold-white {
+            font-weight: bold;
+            color: white;
+        }
+
+        label.hexagramNameLabel {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Buttons & links style */
+        button.pixel-button,
+        a.pixel-button {
+            background-color: #444;
+            color: #e4ae30;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'zpix', monospace;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        button.pixel-button:hover,
+        a.pixel-button:hover {
+            background-color: #666;
+        }
+
+        /* Hide sections initially */
+        #countdownPane,
+        #divinationPane {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #yaoList {
+            font-size: 24px;
+        }
+
+        /* Image sizing */
+        #countdownImage {
+            height: 200px;
+            object-fit: contain;
+        }
+
+        #YaoImage {
+            width: 120px;
+            height: 150px;
+            object-fit: contain;
+        }
+
+        .rotating {
+            animation: flipX 0.8s linear infinite;
+            transform-style: preserve-3d;
+        }
+
+        @keyframes flipX {
+            from {
+                transform: rotateX(0deg);
+            }
+
+            to {
+                transform: rotateX(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div>
+
+    <!-- Input Question -->
+    <div id="questionPane" class="vbox">
+        <label class="instruction">Instruction Text Here</label>
+        <label class="question">Question Text Here</label>
+        <input id="questionField" type="text" placeholder="Enter your question here" />
+        <button id="submitQuestionButton" class="pixel-button" onclick="onSubmitQuestion()">Submit Question</button>
+        <a id="HomeLink" href="#" class="pixel-button"> Home </a>
+    </div>
+
+    <!-- CountDown Image -->
+    <div id="countdownPane" class="vbox">
+        <img id="countdownImage" src="" alt="Countdown" width="200" height="200" />
+        <label id="countdownLabel" style="font-size: 28px;"></label>
+    </div>
+
+    <!-- Divination Coin Result -->
+    <div id="throwCoinPane" class="vbox" style="display: none;">
+        <p>《易经》起卦方法之一为“投三枚铜钱六次”，所得六爻构成卦象。</p>
+        <button id="startButton" class="pixel-button" onclick="getHexagramState()">Start</button>
+        <div id="coinRow" style="display: flex; justify-content: center; gap: 10px;">
+            <img id="coin1" src="" class="rotating" width="100" />
+            <img id="coin2" src="" class="rotating" width="100" />
+            <img id="coin3" src="" class="rotating" width="100" />
+        </div>
+
+        <button id="getYao" class="pixel-button">投掷硬币</button>
+        <p style="font-size:16px; text-align:center; color:#e4ae30;">
+            请依次点击「起卦」按钮六次，每次代表一爻。每次抛出的结果和爻象解释会显示在下方。
+        </p>
+        <p id="yaoExplanation"></p>
+
+        <div id="finalResult" style="display: none;">
+            <img id="finalHexagram" src="" width="200" />
+            <p id="hexagramName"></p>
+        </div>
+
+    </div>
+    <button id="toSecondStage" onclick="toStageTwo()" class="pixel-button">已生成卦象，可前往查看详细解卦➡</button>
+</div>
+
+<script>
+    document.getElementById('throwCoinPane').style.display = 'none';
+    document.getElementById('finalResult').style.display = 'none';
+    document.getElementById('getYao').style.display = 'none';
+    document.getElementById('toSecondStage').style.display = 'none';
+
+    function onSubmitQuestion() {
+        const questionField = document.getElementById('questionField');
+        const currentQuestion = questionField.value.trim();
+
+        if (!currentQuestion) {
+            alert("Please Enter a Question!");
+            return;
+        }
+        fetch('/div/saveQuestion', {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({question: currentQuestion})
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    startCountdown();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error saving question: ' + error.message);
+            });
+    }
+
+    //Countdown Function
+    function startCountdown() {
+        // Hide question pane, show countdown pane
+        document.getElementById('questionPane').style.display = 'none';
+        const countdownPane = document.getElementById('countdownPane');
+        countdownPane.style.display = 'flex'; // assuming flexbox container
+
+        const countdownLabel = document.getElementById('countdownLabel');
+        countdownLabel.textContent = "Calm down..."; // Replace with localized text if needed
+        countdownLabel.style.color = 'orange';
+
+        const countdownImage = document.getElementById('countdownImage');
+
+        // Countdown from 5 to 1, show image each second
+        let count = 5;
+        countdownImage.src = `/images/count${count}.png`; // initial image
+
+        const intervalId = setInterval(() => {
+            count--;
+            if (count > 0) {
+                countdownImage.src = `/images/count${count}.png`;
+            } else {
+                clearInterval(intervalId);
+
+                // Hide countdown, show divination pane
+                countdownPane.style.display = 'none';
+                document.getElementById('throwCoinPane').style.display = 'flex';
+
+                alert("Start!");
+            }
+        }, 1000);
+    }
+
+    let Hexa_bi = null;
+    let Changed_bi = null;
+    let yaoCount = 0;
+    let allYaos = [];
+    let currentYaoIndex = 0;
+
+
+    function getHexagramState() {
+        yaoCount = 0;
+        //animation
+        for (let i = 1; i <= 3; i++) {
+            const coin = document.getElementById("coin" + i);
+            coin.src = "/images/undecided.png";
+            coin.classList.add("rotating");
+        }
+        fetch("/div/getState?langCode=ja", {method: "POST"})
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    allYaos = data.state.yaos;
+                    Hexa_bi = data.state.hexa_bi;
+                    Changed_bi = data.state.change_bi;
+                    currentYaoIndex = 0;
+                    getYaos(data);
+                } else {
+                    alert("发生错误：" + data.message);
+                }
+            });
+
+        document.getElementById('startButton').style.display = 'none';
+        document.getElementById('getYao').style.display = 'inline-block';
+    }
+
+    //start throw coins
+    let isListenerBound = false;
+
+	function getYaos(data) {
+	    if (isListenerBound) return;
+	    isListenerBound = true;
+
+	    document.getElementById("getYao").addEventListener("click", () => {
+	        if (yaoCount >= 6 || allYaos.length !== 6) return;
+
+	        const faces = allYaos[yaoCount];
+	        for (let i = 1; i <= 3; i++) {
+	            const coin = document.getElementById("coin" + i);
+	            coin.classList.remove("rotating");
+	            coin.src = "/images/" + faces[i - 1] + ".png";
+	        }
+
+	        const currentYaoType = data.state.yaoTypes[yaoCount];
+	        let explanation = `第 ${yaoCount + 1} 爻：`;
+
+	        switch (currentYaoType) {
+	            case 'SHAO_YIN':
+	                explanation += '两阳一阴，为「少阴」爻（阴，静爻）';
+	                break;
+	            case 'SHAO_YANG':
+	                explanation += '两阴一阳，为「少阳」爻（阳，静爻）';
+	                break;
+	            case 'LAO_YIN':
+	                explanation += '三阴，为「老阴」爻（阴，变爻，将来变为阳）';
+	                break;
+	            case 'LAO_YANG':
+	                explanation += '三阳，为「老阳」爻（阳，变爻，将来变为阴）';
+	                break;
+	        }
+            document.getElementById("yaoExplanation").innerText = explanation;
+            document.getElementById("getYao").innerText = `投掷硬币（第${yaoCount + 1}/6次）`;//改按鈕文字進度
+	        yaoCount++;
+
+	        if (yaoCount === 6) {
+	            document.getElementById('finalResult').style.display = 'inline-block';
+	            document.getElementById("finalHexagram").src = "/images/" + data.state.hexa_bi + ".png";
+	            document.getElementById("hexagramName").textContent = data.state.hexaName;
+	            document.getElementById('toSecondStage').style.display = 'inline-block';
+	        } else {
+	            setTimeout(() => {
+	                for (let i = 1; i <= 3; i++) {
+	                    const coin = document.getElementById("coin" + i);
+	                    coin.src = "/images/undecided.png";
+	                    coin.classList.add("rotating");
+	                }
+	            }, 1000);
+	        }
+	    });
+	}
+
+    function toStageTwo(){
+        if (Hexa_bi) {
+            window.location.href = `/hexaSecondStage.html?hexaId=${Hexa_bi}`;
+        } else {
+            alert("Hexagram ID missing, cannot continue.");
+        }
+    }
+
+
+
+
+</script>
+</body>
+
+</html>

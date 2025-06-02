@@ -1,6 +1,11 @@
 package com.example.demo.JDBC.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Hexa {
+	@Id
     private String hexaId;
     private String langCode;
     private String hexaName;

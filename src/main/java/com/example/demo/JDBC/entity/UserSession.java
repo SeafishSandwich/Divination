@@ -1,13 +1,10 @@
 package com.example.demo.JDBC.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
-@Entity
 public class UserSession {
-    @Id
     private int userId;
     private String username;
+
+    public UserSession() {}
 
     public void setUser(int id, String name) {
         this.userId = id;

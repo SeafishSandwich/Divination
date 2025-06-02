@@ -2,19 +2,23 @@ package com.example.demo.JDBC.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 
 @Entity
+@IdClass(HexaId.class)
 public class Hexa {
+
 	@Id
-    private String hexaId;
-    private String langCode;
-    private String hexaName;
-    private String hexaContent;
-    
-    public Hexa() {
-    	
-    }
-    
+	private String hexaId;
+
+	@Id
+	private String langCode;
+
+	private String hexaName;
+	private String hexaContent;
+
+	public Hexa() {}
+
 	public Hexa(String hexaId, String langCode, String hexaName, String hexaContent) {
 		this.hexaId = hexaId;
 		this.langCode = langCode;
@@ -22,6 +26,7 @@ public class Hexa {
 		this.hexaContent = hexaContent;
 	}
 
+	// getter 和 setter
 	public String getHexaId() {
 		return hexaId;
 	}

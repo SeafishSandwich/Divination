@@ -1,11 +1,14 @@
 package com.example.demo.JDBC.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String email;
     private String user_name;
@@ -14,7 +17,6 @@ public class User {
     public User() {}
 
     public User(String user_name, String email, String password) {
-        this.id = id;
         this.user_name = user_name;
         this.email = email;
         this.password = password;

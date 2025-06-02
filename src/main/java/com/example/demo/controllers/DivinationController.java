@@ -26,20 +26,27 @@ public class DivinationController {
     @PostMapping("/saveQuestion")
     @ResponseBody
     public Map<String, Object> saveQuestion(@RequestBody Map<String, String> payload, HttpSession session) {
-        UserSession userSession = (UserSession) session.getAttribute("userSession");
-        System.out.println("userId = " + userSession.getUserId());//test
         Map<String, Object> result = new HashMap<>();
+
+        UserSession userSession = (UserSession) session.getAttribute("userSession");
+        System.out.println("userId = " + userSession.getUserId()); // test
+
         String question = payload.get("question");
         if (question == null || question.trim().isEmpty()) {
             result.put("success", false);
             result.put("message", "Question cannot be empty");
             return result;
         }
+
         try {
-            divinationSession.saveQuestion(userSession.getUserId(), question);
+            // 临时代码，先用假图片代替 imageBytes
+            byte[] dummyImage = new byte[]{0, 1, 2, 3};  // TODO: 替换为真实 imageBytes
+            divinationSession.saveQuestion(dummyImage, question);
+
             result.put("success", true);
             result.put("message", "Question saved successfully");
         } catch (Exception e) {
+            e.printStackTrace();
             result.put("success", false);
             result.put("message", "Failed to save question");
         }

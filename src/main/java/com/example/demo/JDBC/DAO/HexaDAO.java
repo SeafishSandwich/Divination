@@ -114,13 +114,14 @@ public class HexaDAO {
 		return Optional.empty();
 	}
 
-	public void saveQuestion(int userId, String question) throws SQLException {
-		String sql = "INSERT INTO users_hexa (user_id, question) VALUES (?, ?)";
-		Connection connection = dataSource.getConnection();
-		PreparedStatement stmt = connection.prepareStatement(sql);
-		stmt.setInt(1, userId);
-		stmt.setString(2, question);
-		stmt.executeUpdate();
+	public void saveQuestion(byte[] imageBytes, String question) throws SQLException {
+		String sql = "INSERT INTO users_hexa (image_bytes, question) VALUES (?, ?)";
+		try (Connection connection = dataSource.getConnection();
+			 PreparedStatement stmt = connection.prepareStatement(sql)) {
+			stmt.setBytes(1, imageBytes);
+			stmt.setString(2, question);
+			stmt.executeUpdate();
+		}
 	}
 
 

@@ -23,6 +23,7 @@ import java.util.*;
 @SessionScope
 public class DivinationSession {
 
+
     private final HexaDAO hexaDao;
     private String hexa_bi;
     private String changed_bi;
@@ -35,8 +36,8 @@ public class DivinationSession {
     }
 
     @Transactional
-    public void saveQuestion(int userId, String question) throws SQLException {
-        hexaDao.saveQuestion(userId, question);
+    public void saveQuestion(byte[] imageBytes, String question) throws SQLException {
+        hexaDao.saveQuestion(imageBytes, question);
     }
 
     //扔硬币

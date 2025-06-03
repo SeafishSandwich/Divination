@@ -1,16 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Welcome</title>
+	<style>
+		html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            padding: 20px;
+            background-image: url('/images/Login_bg.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            font-family: 'zpix', sans-serif;
+            color: #e4ae30;
+            display: flex;
+            flex-direction: column;
+            align-items: center;      /* horizontal center */
+            justify-content: center;  /* vertical center */
+            gap: 10px;
+            height: 100vh;            /* full viewport height */
+            box-sizing: border-box;   /* ensure padding included */
+        }
+
+                form {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+                    background: rgba(0, 0, 0, 0.6); /* optional: better readability */
+                    padding: 30px;
+                    border-radius: 8px;
+                    min-width: 300px;
+
+                }
+
+                label {
+                    font-size: 18px;
+                    margin-bottom: 5px;
+                }
+
+                input[type="email"],
+                input[type="password"] {
+                    font-size: 18px;
+                    padding: 8px;
+                    border: none;
+                    border-radius: 4px;
+                }
+
+                button.pixel-button,
+                a.pixel-button,
+                input.pixel-button{
+                    background-color: #444;
+                    color: #e4ae30;
+                    border: none;
+                    padding: 10px 20px;
+                    font-family: 'zpix', monospace;
+                    cursor: pointer;
+                    text-decoration: none;
+                    display: inline-block;
+                    text-align: center;
+                    font-size: 18px;  /* enlarged font */
+                    border-radius: 4px;
+                }
+
+                button.pixel-button:hover,
+                a.pixel-button:hover,
+                input.pixel-button: hover{
+                    background-color: #666;
+                }
+
+                .button-group {
+                    display: flex;
+                    gap: 10px;
+                    justify-content: center;
+                    margin-top: 10px;
+                }
+	</style>
+	<meta charset="UTF-8">
+	<title>Welcome</title>
 </head>
 <body>
-	<form action="/users/login" method="post">
-		Email: <input type="email" name="email" required><br>
-		Password: <input type="password" name="password" required><br>
-		<input id="login" type="submit" value="Login">
-		<a href="signup_div.html">Create new account</a>
-		
-	</form>
+<form action="/users/login" method="post">
+	<label for="email">メールアドレス：</label>
+	<input id="email" type="email" name="email" required>
+
+	<label for="password">パスワード：</label>
+	<input id="password" type="password" name="password" required>
+
+	<div class="button-group">
+		<a class="pixel-button" href="signup_div.html">新規登録</a>
+		<input id="login" type="submit" value="ログイン" class="pixel-button">
+	</div>
+</form>
 </body>
 </html>

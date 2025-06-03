@@ -95,7 +95,7 @@
         }
 
         .yao-list {
-            font-size: 22px;
+            font-size: 24px;
             display: flex;
             flex-direction: column;
             gap: 5px;
@@ -193,7 +193,7 @@
             const yaoDiv = document.createElement("div");
             yaoDiv.classList.add("yao-item");
             if (i == 0){
-                yaoDiv.textContent = `Origin　Hexagram　Content: ${line.lineContent}`;
+                yaoDiv.textContent = `本卦の卦象: ${line.lineContent}`;
             }else{
                 yaoDiv.textContent = `第${yaoNumber}爻: ${line.lineContent}`;
             }

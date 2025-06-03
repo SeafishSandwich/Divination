@@ -140,32 +140,35 @@
 
     <!-- Input Question -->
     <div id="questionPane" class="vbox">
-        <label class="instruction">Instruction Text Here</label>
-        <label class="question">Question Text Here</label>
-        <input id="questionField" type="text" placeholder="Enter your question here" />
-        <button id="submitQuestionButton" class="pixel-button" onclick="onSubmitQuestion()">Submit Question</button>
-        <a id="HomeLink" href="#" class="pixel-button"> Home </a>
+        <p>易占いでは「問い」がとても重要です。</p>
+        <p>「私の未来はどうなりますか？」のような漠然とした質問よりも、</p>
+        <p>「今の仕事を続けるべきか？」「あの人とどう関わるのがよいか？」といった、</p>
+        <p>具体的な状況や行動に関する問いの方が、的確なメッセージを受け取りやすくなります。</p>
+        <label class="question">占いたい内容を入力してください：</label>
+        <input id="questionField" type="text" placeholder="聞きたいこと" />
+        <button style="font-size: 24px;" id="submitQuestionButton" class="pixel-button" onclick="onSubmitQuestion()">聞く</button>
+        <!--<a id="HomeLink" href="#" class="pixel-button"> Home </a>-->
     </div>
 
     <!-- CountDown Image -->
     <div id="countdownPane" class="vbox">
-        <img id="countdownImage" src="" alt="Countdown" width="200" height="200" />
+        <img id="countdownImage" src="" alt="Countdown" width="300" height="300" />
         <label id="countdownLabel" style="font-size: 28px;"></label>
     </div>
 
     <!-- Divination Coin Result -->
     <div id="throwCoinPane" class="vbox" style="display: none;">
-        <p>《易经》起卦方法之一为“投三枚铜钱六次”，所得六爻构成卦象。</p>
+        <p style="font-size:20px; text-align:center; color:#e4ae30;">「『易経』の卦を立てる方法の一つに、三枚の銅銭を六回投げ、その結果で得られた六つの爻によって卦象が形成する。</p>
         <button id="startButton" class="pixel-button" onclick="getHexagramState()">Start</button>
         <div id="coinRow" style="display: flex; justify-content: center; gap: 10px;">
-            <img id="coin1" src="" class="rotating" width="100" />
-            <img id="coin2" src="" class="rotating" width="100" />
-            <img id="coin3" src="" class="rotating" width="100" />
+            <img id="coin1" src="" class="rotating" width="200" />
+            <img id="coin2" src="" class="rotating" width="200" />
+            <img id="coin3" src="" class="rotating" width="200" />
         </div>
 
-        <button id="getYao" class="pixel-button">投掷硬币</button>
-        <p style="font-size:16px; text-align:center; color:#e4ae30;">
-            请依次点击「起卦」按钮六次，每次代表一爻。每次抛出的结果和爻象解释会显示在下方。
+        <button id="getYao" class="pixel-button">コインを投げる</button>
+        <p style="font-size:20px; text-align:center; color:#e4ae30;">
+            ボタンを6回押してください。押すたびに1つの爻が決まり、その結果と爻の意味が下に表示されます。
         </p>
         <p id="yaoExplanation"></p>
 
@@ -175,7 +178,7 @@
         </div>
 
     </div>
-    <button id="toSecondStage" onclick="toStageTwo()" class="pixel-button">已生成卦象，可前往查看详细解卦➡</button>
+    <button id="toSecondStage" onclick="toStageTwo()" class="pixel-button">卦が完成しました。詳しい解釈を見るにはこちら➡</button>
 </div>
 
 <script>
@@ -224,7 +227,7 @@
         countdownPane.style.display = 'flex'; // assuming flexbox container
 
         const countdownLabel = document.getElementById('countdownLabel');
-        countdownLabel.textContent = "Calm down..."; // Replace with localized text if needed
+        countdownLabel.textContent = "聞きたいことを思い浮かべて、深呼吸して……";
         countdownLabel.style.color = 'orange';
 
         const countdownImage = document.getElementById('countdownImage');
@@ -244,7 +247,7 @@
                 countdownPane.style.display = 'none';
                 document.getElementById('throwCoinPane').style.display = 'flex';
 
-                alert("Start!");
+                alert("占い開始！");
             }
         }, 1000);
     }
@@ -274,7 +277,7 @@
                     currentYaoIndex = 0;
                     getYaos(data);
                 } else {
-                    alert("发生错误：" + data.message);
+                    alert("ERROR" + data.message);
                 }
             });
 
@@ -304,20 +307,20 @@
 
 	        switch (currentYaoType) {
 	            case 'SHAO_YIN':
-	                explanation += '两阳一阴，为「少阴」爻（阴，静爻）';
+	                explanation += '陽が二つ、陰が一つの場合は『少陰』の爻となる（陰、静爻）';
 	                break;
 	            case 'SHAO_YANG':
-	                explanation += '两阴一阳，为「少阳」爻（阳，静爻）';
+	                explanation += '陰が二つ、陽が一つの場合は『少陽』の爻となる（陽、静爻）';
 	                break;
 	            case 'LAO_YIN':
-	                explanation += '三阴，为「老阴」爻（阴，变爻，将来变为阳）';
+	                explanation += '陰が三つの場合は『老陰』の爻となる（陰、変爻、陽に変わる）';
 	                break;
 	            case 'LAO_YANG':
-	                explanation += '三阳，为「老阳」爻（阳，变爻，将来变为阴）';
+	                explanation += '陽が三つの場合は『老陽』の爻となる（陽、変爻、陰に変わる）';
 	                break;
 	        }
             document.getElementById("yaoExplanation").innerText = explanation;
-            document.getElementById("getYao").innerText = `投掷硬币（第${yaoCount + 1}/6次）`;//改按鈕文字進度
+            document.getElementById("getYao").innerText = `コインを投げる（第${yaoCount + 1}/6回）`;
 	        yaoCount++;
 
 	        if (yaoCount === 6) {

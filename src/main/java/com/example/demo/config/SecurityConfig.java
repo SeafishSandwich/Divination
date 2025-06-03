@@ -25,7 +25,8 @@ public class SecurityConfig {
                                 "/hexaSecondStage.html",
                                 "/css/**",
                                 "/js/**",
-                                "/div/**"
+                                "/div/**",
+                                "/fonts/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
